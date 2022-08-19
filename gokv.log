@@ -1,0 +1,136 @@
+{"level":"INFO","time":"2022-08-12T21:11:41.555+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-12T21:11:41.555+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-12T22:56:38.728+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-12T22:56:38.728+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-12T23:00:21.575+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-12T23:00:21.575+0800","caller":"server/server.go:59","msg":"connection closed: 127.0.0.1:57343"}
+{"level":"INFO","time":"2022-08-12T23:00:21.575+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-12T23:00:35.613+0800","caller":"server/server.go:59","msg":"connection closed: 127.0.0.1:57364"}
+{"level":"INFO","time":"2022-08-12T23:01:05.739+0800","caller":"server/server.go:59","msg":"connection closed: 127.0.0.1:57367"}
+{"level":"INFO","time":"2022-08-12T23:04:49.245+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-12T23:04:49.245+0800","caller":"server/server.go:59","msg":"connection closed: 127.0.0.1:57382"}
+{"level":"INFO","time":"2022-08-12T23:04:49.245+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-12T23:11:29.657+0800","caller":"server/server.go:59","msg":"connection closed: 127.0.0.1:57469"}
+{"level":"INFO","time":"2022-08-12T23:28:37.479+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-12T23:39:56.495+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-12T23:39:56.495+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:04:07.172+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:04:07.172+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:04:28.042+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:04:28.042+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:04:43.327+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:04:43.327+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:04:59.143+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:07:42.825+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:07:42.825+0800","caller":"server/server.go:59","msg":"connection closed: 127.0.0.1:58356"}
+{"level":"INFO","time":"2022-08-13T00:07:42.825+0800","caller":"server/server.go:90","msg":"handler shutting down..."}
+{"level":"ERROR","time":"2022-08-13T00:09:37.990+0800","caller":"database/mdb.go:40","msg":"MultiDB.Exec() failed. ","error":"runtime error: invalid memory address or nil pointer dereference"}
+{"level":"ERROR","time":"2022-08-13T00:13:11.170+0800","caller":"database/mdb.go:40","msg":"MultiDB.Exec() failed. ","error":"interface conversion: interface {} is []uint8, not string"}
+{"level":"INFO","time":"2022-08-13T00:14:07.770+0800","caller":"exec/string.go:45","msg":"key: k1val: v1"}
+{"level":"INFO","time":"2022-08-13T00:14:25.189+0800","caller":"exec/string.go:45","msg":"key: k1 val: v1"}
+{"level":"INFO","time":"2022-08-13T00:14:58.736+0800","caller":"exec/string.go:45","msg":"key: k1 val: v1"}
+{"level":"INFO","time":"2022-08-13T00:15:15.306+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:16:02.243+0800","caller":"exec/string.go:45","msg":"key: k1 val: v1"}
+{"level":"INFO","time":"2022-08-13T00:17:20.397+0800","caller":"exec/string.go:45","msg":"key: k1 val: v1"}
+{"level":"INFO","time":"2022-08-13T00:17:59.850+0800","caller":"exec/string.go:45","msg":"key: k1 val: v1"}
+{"level":"INFO","time":"2022-08-13T00:24:26.359+0800","caller":"exec/string.go:45","msg":"key: k1 val: v1"}
+{"level":"INFO","time":"2022-08-13T00:25:57.962+0800","caller":"exec/string.go:45","msg":"key: k1 val: v1"}
+{"level":"INFO","time":"2022-08-13T00:30:31.620+0800","caller":"exec/string.go:45","msg":"key: k1 val: v1"}
+{"level":"INFO","time":"2022-08-13T00:40:16.278+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:40:16.278+0800","caller":"server/server.go:60","msg":"connection closed: 127.0.0.1:58721"}
+{"level":"INFO","time":"2022-08-13T00:40:16.278+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:42:00.613+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:42:00.614+0800","caller":"server/server.go:60","msg":"connection closed: 127.0.0.1:58790"}
+{"level":"INFO","time":"2022-08-13T00:42:00.615+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:42:36.400+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:42:36.401+0800","caller":"server/server.go:60","msg":"connection closed: 127.0.0.1:58808"}
+{"level":"INFO","time":"2022-08-13T00:42:36.401+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:43:31.851+0800","caller":"server/server.go:60","msg":"connection closed: 127.0.0.1:58815"}
+{"level":"INFO","time":"2022-08-13T00:47:24.783+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T00:47:24.783+0800","caller":"server/server.go:60","msg":"connection closed: 127.0.0.1:58823"}
+{"level":"INFO","time":"2022-08-13T00:47:24.783+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T11:23:44.633+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T11:23:44.634+0800","caller":"server/server.go:60","msg":"connection closed: 127.0.0.1:58866"}
+{"level":"INFO","time":"2022-08-13T11:23:44.634+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T11:28:53.932+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-13T11:28:53.932+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T11:15:55.903+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T11:15:55.903+0800","caller":"server/server.go:91","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:27:34.338+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:27:34.338+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:27:37.388+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:27:37.388+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:29:11.365+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:29:11.365+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:32:14.024+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:32:14.024+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:34:53.788+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:34:53.788+0800","caller":"server/server.go:61","msg":"connection closed: 127.0.0.1:55079"}
+{"level":"INFO","time":"2022-08-14T13:34:53.788+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:36:19.529+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:36:19.529+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:40:02.693+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:40:02.693+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:45:37.464+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:45:37.464+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:47:06.385+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:47:06.385+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:51:37.070+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:51:37.071+0800","caller":"server/server.go:61","msg":"connection closed: 127.0.0.1:55375"}
+{"level":"INFO","time":"2022-08-14T13:51:37.071+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:52:37.775+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:52:37.775+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:59:16.829+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T13:59:16.829+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T14:07:13.998+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T14:07:13.998+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T14:20:38.003+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T14:20:38.003+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T15:04:22.863+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T15:04:22.863+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T15:45:20.618+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T15:45:20.618+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T15:52:00.705+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T15:52:00.705+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T17:10:40.424+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T17:10:40.424+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T17:42:30.268+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T17:42:30.268+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T17:54:49.142+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T17:54:49.143+0800","caller":"server/server.go:61","msg":"connection closed: 127.0.0.1:62355"}
+{"level":"INFO","time":"2022-08-14T17:54:49.143+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T18:07:32.170+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T18:07:32.171+0800","caller":"server/server.go:61","msg":"connection closed: 127.0.0.1:62477"}
+{"level":"INFO","time":"2022-08-14T18:07:32.171+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T18:07:37.469+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T18:24:01.148+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T18:24:01.149+0800","caller":"server/server.go:61","msg":"connection closed: 127.0.0.1:63167"}
+{"level":"INFO","time":"2022-08-14T18:24:01.149+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T18:26:30.523+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T18:26:30.523+0800","caller":"server/server.go:61","msg":"connection closed: 127.0.0.1:63331"}
+{"level":"INFO","time":"2022-08-14T18:26:30.523+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-14T18:29:51.342+0800","caller":"server/server.go:61","msg":"connection closed: 127.0.0.1:63470"}
+{"level":"INFO","time":"2022-08-15T08:55:01.932+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-15T08:55:01.933+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"ERROR","time":"2022-08-16T22:34:48.234+0800","caller":"aof/aof.go:124","msg":"Aof Handler LoadAof() db exec ERR unknown command 'pexpireat'"}
+{"level":"INFO","time":"2022-08-16T22:34:49.775+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-16T22:34:49.775+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"ERROR","time":"2022-08-16T22:50:26.893+0800","caller":"aof/aof.go:124","msg":"Aof Handler LoadAof() db exec ERR unknown command 'pexpireat'"}
+{"level":"INFO","time":"2022-08-16T23:21:08.419+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-16T23:21:08.419+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-18T11:10:36.350+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-18T11:10:36.350+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-18T12:49:46.023+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-18T12:49:46.023+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-18T19:58:38.407+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-18T19:58:38.407+0800","caller":"server/server.go:92","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-19T19:50:30.631+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-19T19:50:30.631+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-19T20:29:34.648+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-19T20:29:34.648+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-19T20:38:14.771+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-19T20:38:14.772+0800","caller":"server/server.go:71","msg":"connection closed: 127.0.0.1:52199"}
+{"level":"INFO","time":"2022-08-19T20:38:14.773+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-19T22:49:17.266+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-19T22:49:17.268+0800","caller":"server/server.go:71","msg":"connection closed: 127.0.0.1:53834"}
+{"level":"INFO","time":"2022-08-19T22:49:17.268+0800","caller":"server/server.go:108","msg":"handler shutting down..."}

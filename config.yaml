@@ -1,0 +1,18 @@
+bind: "0.0.0.0"
+port: 6399
+append_only: true
+append_filename: "redis.aof"
+append_mode: "everysec"
+max_clients: 1000
+databases: 16
+data_dict_size: 32768
+ttl_dict_size: 1024
+locker_size: 1024
+
+logger:
+  mode: "dev"
+  level: "debug"
+  filename: "gokv.log"
+  max_size: 200
+  max_age: 30
+  max_backups: 7
