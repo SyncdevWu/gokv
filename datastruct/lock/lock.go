@@ -2,6 +2,7 @@ package lock
 
 import (
 	"gokv/lib/hash"
+	"math"
 	"sort"
 	"sync"
 )
@@ -11,6 +12,7 @@ type Locks struct {
 }
 
 func NewLocks(size int32) *Locks {
+	size = computeCapacity(size)
 	table := make([]*sync.RWMutex, size)
 	for i := 0; i < int(size); i++ {
 		table[i] = &sync.RWMutex{}
@@ -18,6 +20,22 @@ func NewLocks(size int32) *Locks {
 	return &Locks{
 		table: table,
 	}
+}
+
+func computeCapacity(param int32) (size int32) {
+	if param <= 16 {
+		return 16
+	}
+	n := param - 1
+	n |= n >> 1
+	n |= n >> 2
+	n |= n >> 4
+	n |= n >> 8
+	n |= n >> 16
+	if n < 0 {
+		return math.MaxInt32
+	}
+	return n + 1
 }
 
 func (l *Locks) spread(hashCode int32) int32 {
