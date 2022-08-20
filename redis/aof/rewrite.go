@@ -25,7 +25,14 @@ func (handler *Handler) newRewriteHandler() *Handler {
 	}
 }
 
+// Rewrite aof重写
 func (handler *Handler) Rewrite() error {
+	// 在进行AOF重写操作时需要满足两个要求:
+	// 若 AOF 重写失败或被中断，AOF 文件需保持重写之前的状态不能丢失数据
+	// 进行 AOF 重写期间执行的命令必须保存到新的AOF文件中, 不能丢失
+	// 暂停AOF写入 -> 更改状态为重写中 -> 准备重写 -> 恢复AOF写入
+	// 重写协程读取 AOF 文件中的前一部分（重写开始前的数据，不包括读写过程中写入的数据）并重写到临时文件（tmp.aof）中
+	// 暂停AOF写入 -> 将重写过程中产生的新数据写入tmp.aof -> 使用临时文件tmp.aof覆盖AOF文件（使用文件系统的mv命令保证安全 -> 恢复AOF写入
 	context, err := handler.StartRewrite()
 	if err != nil {
 		return err
@@ -50,7 +57,7 @@ func (handler *Handler) StartRewrite() (*Context, error) {
 		zap.L().Warn("Rewrite StartRewrite() aof file sync failed", zap.Error(err))
 		return nil, err
 	}
-	// 读取下aof文件大小
+	// 读取下当前aof文件大小 即可以读取到到aof重写开始前的所有数据
 	stat, _ := os.Stat(handler.aofFileName)
 	fileSize := stat.Size()
 	// 创建tmp.aof 作为新的aof文件 最后会用该文件替换redis.aof
@@ -60,15 +67,15 @@ func (handler *Handler) StartRewrite() (*Context, error) {
 		return nil, err
 	}
 	return &Context{
-		tmpFile:        tmpFile,
-		fileSize:       fileSize,
-		currentDBIndex: handler.currentDBIndex,
+		tmpFile:        tmpFile,                // 新的aof文件 后面会用这个直接覆盖旧的
+		fileSize:       fileSize,               // 到aof重写开始时的aof文件大小
+		currentDBIndex: handler.currentDBIndex, // aof持久化当前切到的db
 	}, nil
 }
 
 func (handler *Handler) DoRewrite(context *Context) error {
 	tmpFile := context.tmpFile
-	//
+	// 只持有aofFile和tmpDB的handler aofFile用于读取重写期间的命令
 	rewriteHandler := handler.newRewriteHandler()
 	// 只读取aof重写前的数据 把这些数据加载到tmp数据库中
 	rewriteHandler.LoadAof(int(context.fileSize))
@@ -80,7 +87,10 @@ func (handler *Handler) DoRewrite(context *Context) error {
 			zap.L().Error("Rewrite DoRewrite() write failed", zap.Error(err))
 			return err
 		}
+		// 遍历当前数据库的所有key
 		rewriteHandler.db.ForEach(i, func(key string, data *redis.DataEntity, expiration *time.Time) bool {
+			// 转成对应的bulk String数组
+			// 带有过期时间的key会分为两条命令
 			cmd := EntityToCmd(key, data)
 			if cmd != nil {
 				_, _ = tmpFile.Write(cmd.ToBytes())
@@ -107,7 +117,7 @@ func (handler *Handler) FinishRewrite(context *Context) error {
 		return err
 	}
 	defer srcFile.Close()
-	// 从aof重写后开始读取
+	// 从aof重写后开始读取 根据fileSize设置偏移量
 	_, err = srcFile.Seek(context.fileSize, 0)
 	if err != nil {
 		zap.L().Error("Handler FinishRewrite() seek failed ", zap.Error(err))
@@ -138,8 +148,9 @@ func (handler *Handler) FinishRewrite(context *Context) error {
 		return err
 	}
 	handler.aofFile = aofFile
-
 	// 额外加一条切换数据库的命令 保证跟当前服务器被选中的数据库一致
+	// 注意context.currentDBIndex是aof重写开始时aofHandler在处理的dbIndex
+	// 而handler.currentDBIndex显然在aof重写的时候可能会被变更 是最新的aofHandler在处理的dbIndex
 	data = protocol.NewMultiBulkReply(utils.ToCmdLine("SELECT", strconv.Itoa(handler.currentDBIndex))).ToBytes()
 	_, err = handler.aofFile.Write(data)
 	if err != nil {
