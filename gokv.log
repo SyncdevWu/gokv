@@ -134,3 +134,5 @@
 {"level":"INFO","time":"2022-08-19T22:49:17.266+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
 {"level":"INFO","time":"2022-08-19T22:49:17.268+0800","caller":"server/server.go:71","msg":"connection closed: 127.0.0.1:53834"}
 {"level":"INFO","time":"2022-08-19T22:49:17.268+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-20T10:00:26.363+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-08-20T10:00:26.363+0800","caller":"server/server.go:108","msg":"handler shutting down..."}

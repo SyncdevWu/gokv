@@ -147,7 +147,7 @@ func (handler *Handler) everySecSync() {
 	}
 	defer handler.aofSyncTicker.Stop()
 	for {
-		// 当ticker没有收到数据时也会被阻塞住 如果这个时候aofSyncTickerStopChan收到了数据则就直接退出
+		// 当ticker还没到时间间隔的时候会被阻塞住 如果这个时候aofSyncTickerStopChan收到了数据则就直接退出 并会调用ticker.Stop
 		select {
 		case <-handler.aofSyncTicker.C:
 			_ = handler.aofFile.Sync()
@@ -158,13 +158,14 @@ func (handler *Handler) everySecSync() {
 }
 
 func (handler *Handler) handlerAof() {
-	// 顺序执行每个db
+	// 默认选中db0 因为对于每个客户端它们的当前dbIndex都是不同的 但是conn里的index的字段默认也是0 因此在还原的时候就能正确恢复到db0上
+	// 如果命令的db于aof记录的当前的db不同 持久化之前要加上切换成他们当前的db 在后续数据恢复的时候才能恢复到对应的db
 	handler.currentDBIndex = 0
 	for p := range handler.aofChan {
 		// 加读锁 防止其他协程暂停aof操作 如aof重写的开始或完成
 		handler.pausingAof.RLock()
 		if p.dbIndex != handler.currentDBIndex {
-			// 补充一条切换数据库命令
+			// 切换数据库
 			multiBulk := protocol.NewMultiBulkReply(utils.ToCmdLine("SELECT", strconv.Itoa(p.dbIndex))).ToBytes()
 			_, err := handler.aofFile.Write(multiBulk)
 			if err != nil {
