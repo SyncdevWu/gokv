@@ -18,11 +18,13 @@ func (sdb *SingleDB) ExecMulti(conn redis.Connection, watching map[string]uint32
 		if !ok {
 			return protocol.NewErrReply("ERR unknown command '" + cmdName + "'")
 		}
+		// 事务执行前分析需要加锁的key 并对他们分别加读锁或写锁 而且是必须一次性加上
 		prepare := cmd.Prepare
 		write, read := prepare(cmdLine[1:])
 		writeKeys = append(writeKeys, write...)
 		readKeys = append(readKeys, read...)
 	}
+	// 乐观锁观察key
 	watchingKeys := make([]string, 0, len(watching))
 	for key := range watching {
 		watchingKeys = append(watchingKeys, key)
@@ -53,6 +55,8 @@ func (sdb *SingleDB) ExecMulti(conn redis.Connection, watching map[string]uint32
 			aborted = true
 			// 执行出错的命令不需要回滚
 			undoCmdLines = undoCmdLines[:len(undoCmdLines)-1]
+			// 后续不需要执行 准备回滚
+			// 这里的处理与原生的redis是不同的 原生的redis是事务中的命令在执行出错的时候 会继续执行后续的命令的
 			break
 		}
 		results = append(results, reply)

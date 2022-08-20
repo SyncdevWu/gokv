@@ -186,6 +186,7 @@ func execSet(sdb *database.SingleDB, args [][]byte) redis.Reply {
 	if result > 0 {
 		if ttl != unlimitedTTL {
 			// 带有过期时间的key ttl单位是ms 转成ns
+			// ttl表示的是key的存活时间 将其转成过期时间戳
 			expireTime := time.Now().Add(time.Duration(ttl) * time.Millisecond)
 			// 添加到ttl dict中, 并向time wheel添加任务
 			sdb.Expire(key, expireTime)

@@ -82,6 +82,7 @@ func (sdb *SingleDB) Exec(conn redis.Connection, cmdLine [][]byte) redis.Reply {
 	if conn != nil && conn.InMultiState() {
 		return sdb.EnqueueCmd(conn, cmdLine)
 	}
+	// 普通命令 set k v
 	return sdb.execNormalCommand(cmdLine)
 }
 
@@ -134,6 +135,7 @@ func (sdb *SingleDB) GetEntity(key string) (*redis.DataEntity, bool) {
 	if !ok {
 		return nil, false
 	}
+	// 惰性删除 只有key被访问的时候会被删除
 	if sdb.IsExpired(key) {
 		return nil, false
 	}
@@ -153,6 +155,7 @@ func (sdb *SingleDB) PutIfAbsent(key string, entity *redis.DataEntity) int32 {
 	return sdb.data.PutIfAbsent(key, entity)
 }
 
+// Remove 删除key 这个函数会同时从data和ttl的dict中删除 并取消时间轮中的任务
 func (sdb *SingleDB) Remove(key string) int32 {
 	result := sdb.data.Remove(key)
 	_ = sdb.ttl.Remove(key)
@@ -228,6 +231,8 @@ func (sdb *SingleDB) IsExpired(key string) bool {
 	if !exists {
 		return false
 	}
+	// 在访问的时候会检测这个key是否过期了 如果过期了则将他从ttl中删除 属于惰性删除
+	// 而时间轮的作用是定期删除 只有时间轮走到了当时保存这个过期key的位置的时候，在遍历链表的时候才会删除
 	expireTime, _ := rawExpireTime.(time.Time)
 	expired := time.Now().After(expireTime)
 	if expired {
@@ -236,7 +241,7 @@ func (sdb *SingleDB) IsExpired(key string) bool {
 	return expired
 }
 
-// Expire 给key添加过期时间 该方法会把key添加到ttl dict中 同事创建时间轮任务
+// Expire 给key添加过期时间 该方法会把key添加到ttl dict中 同时创建时间轮任务 定期删除
 func (sdb *SingleDB) Expire(key string, expireTime time.Time) {
 	sdb.ttl.Put(key, expireTime)
 	taskKey := genExpireTask(key)
