@@ -2,6 +2,7 @@ package parser
 
 import (
 	"bytes"
+	"gokv/interface/redis"
 	"gokv/redis/protocol"
 	"io"
 	"testing"
@@ -10,7 +11,7 @@ import (
 )
 
 func TestParseStream(t *testing.T) {
-	replies := []protocol.Reply{
+	replies := []redis.Reply{
 		protocol.NewIntReply(1),
 		protocol.NewStatusReply("OK"),
 		protocol.NewErrReply("ERR unknown"),
@@ -27,7 +28,7 @@ func TestParseStream(t *testing.T) {
 		reqs.Write(re.ToBytes())
 	}
 	reqs.Write([]byte("set a a" + protocol.CRLF)) // test text reply
-	expected := make([]protocol.Reply, len(replies))
+	expected := make([]redis.Reply, len(replies))
 	copy(expected, replies)
 	expected = append(expected, protocol.NewMultiBulkReply([][]byte{
 		[]byte("set"), []byte("a"), []byte("a"),

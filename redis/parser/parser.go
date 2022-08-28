@@ -34,7 +34,7 @@ type Payload struct {
 
 type readState struct {
 	readingRepl       bool
-	readingMultiLine  bool     // 是否正在读取BulkString数组
+	readingMultiLine  bool     // 是否正在读取BulkString数组或BulkString
 	msgType           byte     // 消息类型 * $
 	expectedArgsCount int64    // 参数数量3 Set key value => *3\r\n$3\r\nSET\r\n$3\r\nkey\r\n$5\r\nvalue\r\n
 	bulkLen           int64    // bulk String的长度
