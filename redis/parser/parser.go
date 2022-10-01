@@ -4,11 +4,10 @@ import (
 	"bufio"
 	"bytes"
 	"errors"
+	"go.uber.org/zap"
 	"gokv/interface/redis"
 	"gokv/redis/protocol"
 	"io"
-	"log"
-	"runtime/debug"
 	"strconv"
 	"strings"
 )
@@ -91,7 +90,7 @@ func parseInternal(reader io.Reader, ch chan<- *Payload) {
 	// recover
 	defer func() {
 		if err := recover(); err != nil {
-			log.Printf("err: %v %s", err, string(debug.Stack()))
+			zap.L().Error("parseInternal: ", zap.Any("err", err))
 		}
 	}()
 	// 带有默认缓冲区的流 缓冲区大小4096
@@ -102,6 +101,7 @@ func parseInternal(reader io.Reader, ch chan<- *Payload) {
 
 	for {
 		var ioError bool
+		// 先尝试的非二进制安全的读取一行 且\r\n结尾才满足repl协议
 		msg, ioError, err = readLine(bufReader, &state)
 		if err != nil {
 			// io错误直接结束解析 该io错误由readLine中的reader.ReadBytes(LF)返回
@@ -121,6 +121,7 @@ func parseInternal(reader io.Reader, ch chan<- *Payload) {
 			state = readState{}
 			continue
 		}
+		// 默认是false 但是如果是*或者$则这个会在parseXXXHeader函数中修改
 		if !state.readingMultiLine {
 			// 解析单行 包括非二进制安全字符串、bulk String的第一行以及bulk String数组第一行
 			var firstByte = msg[0]
@@ -154,7 +155,7 @@ func parseInternal(reader io.Reader, ch chan<- *Payload) {
 					state = readState{}
 					continue
 				}
-				// 空字符串 $-1\r\n
+				// nil字符串 $-1\r\n
 				if state.bulkLen == NullBulkHeader {
 					ch <- &Payload{
 						Data: &protocol.NullBulkReply{},
@@ -200,7 +201,7 @@ func parseInternal(reader io.Reader, ch chan<- *Payload) {
 
 }
 
-// readLine 从带缓冲的流中读取一行
+// readLine 从缓冲的流中读取一行
 func readLine(reader *bufio.Reader, state *readState) (msg []byte, ioError bool, err error) {
 	// state.bulkLen == 0 表示读取状态刚被初始化过，一般是出现err或者已经完整读完了
 	// state.bulkLen只会在readBody和parseBulkHeader两个函数中被修改
@@ -229,13 +230,14 @@ func readLine(reader *bufio.Reader, state *readState) (msg []byte, ioError bool,
 		if err != nil {
 			return nil, true, err
 		}
+		// 读完了完整的一行二进制安全 重置bulkLen
 		state.bulkLen = 0
 	}
 	return msg, false, nil
 }
 
 // parseMultiBulkHeader 解析 Bulk String 数组的第一行 主要是读取参数个数 并根据该数据初始化readingState
-// 这个函数不会修改bulkLen 所以
+// 这个函数不会修改bulkLen
 func parseMultiBulkHeader(msg []byte, state *readState) (err error) {
 	var expectedArgsCount uint64
 	// 读取数组有多少元素
@@ -254,6 +256,8 @@ func parseMultiBulkHeader(msg []byte, state *readState) (err error) {
 		state.readingMultiLine = true
 		state.expectedArgsCount = int64(expectedArgsCount)
 		state.args = make([][]byte, 0, expectedArgsCount)
+	} else {
+		return NoProtocol
 	}
 	return nil
 }
@@ -270,7 +274,7 @@ func parseBulkHeader(msg []byte, state *readState) (err error) {
 	// $-1 表示get时找不到key 空返回
 	if state.bulkLen == NullBulkHeader {
 		return nil
-	} else if state.bulkLen > 0 {
+	} else if state.bulkLen >= 0 {
 		state.msgType = msg[0]
 		state.readingMultiLine = true
 		state.expectedArgsCount = 1
@@ -321,6 +325,7 @@ func readBody(msg []byte, state *readState) (err error) {
 		// $-1 NullBulkString null
 		// ["hello",nil,"world"] 在数组中也可能存在nil nil也表示 $-1\r\n
 		// $0 Empty String 空串
+		// $0\r\n\r\n
 		if state.bulkLen <= 0 {
 			state.args = append(state.args, []byte{})
 			state.bulkLen = 0

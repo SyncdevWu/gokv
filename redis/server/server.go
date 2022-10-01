@@ -27,8 +27,8 @@ type Handler struct {
 
 func NewHandler() *Handler {
 	var mdb redis.DB
-	var config = config.Conf
-	if config.Self != "" && len(config.Peers) > 0 {
+	var cfg = config.Conf
+	if cfg.Self != "" && len(cfg.Peers) > 0 {
 		// TODO 集群
 	} else {
 		// mdb *MultiDB 是一个多数据库的db
@@ -55,11 +55,11 @@ func (h *Handler) Handle(ctx context.Context, conn net.Conn) {
 		_ = conn.Close()
 		return
 	}
-	// 将tcp的conn封装成redis.Connection
+	// 将tcp的conn封装成redis.Connection 这个客户端连接会记录这个客户端当前选中的db 或者开启事务时的命令队列
 	clientConn := client.NewConnection(conn)
 	// 保存该连接 activeConn是拿map当set用
 	h.activeConn.Store(clientConn, struct{}{})
-	// 解析客户端发送过来的命令 子协程解析后的命令会通过发送给ch
+	// 解析客户端发送过来的命令 子协程解析后的命令会通过发送给ch ParseStream只会返回一个只读chan
 	ch := parser.ParseStream(conn)
 	for payload := range ch {
 		if err := payload.Err; err != nil {
@@ -106,7 +106,9 @@ func (h *Handler) Handle(ctx context.Context, conn net.Conn) {
 
 func (h *Handler) Close() error {
 	zap.L().Info("handler shutting down...")
+	// 设置正在关闭标志位 标志位为true则后续Handler不会与新的请求建立连接
 	h.closing.Set(true)
+	// 关闭所有客户端连接 但是会等服务端向客户端数据发送完毕才关闭
 	h.activeConn.Range(func(key, value any) bool {
 		clientConn, ok := key.(*client.RedisClientConnection)
 		if ok {
@@ -114,6 +116,7 @@ func (h *Handler) Close() error {
 		}
 		return true
 	})
+	// 关闭mdb数据库
 	h.db.Close()
 	return nil
 }

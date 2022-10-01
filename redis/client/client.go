@@ -15,18 +15,18 @@ const (
 	ReplicationRecvCli
 )
 
+// RedisClientConnection 封装了客户端连接的结构体
 type RedisClientConnection struct {
 	conn         net.Conn
 	waitingReply wait.Wait
 	mu           sync.Mutex
-	password     string // 密码可能在运行时被修改 因此保存密码
-
-	multiState bool              // 事务开启标志
-	queue      [][][]byte        // 事务开启后的所有待执行的命令
-	abort      bool              // 事务中的命令是否有语法错误
-	watching   map[string]uint32 //乐观锁
-	selectedDB int               // 客户端当前选中的db
-	role       int32
+	password     string            // 密码可能在运行时被修改 因此保存密码
+	multiState   bool              // 事务开启标志
+	queue        [][][]byte        // 事务开启后的所有待执行的命令
+	abort        bool              // 事务中的命令是否有语法错误
+	watching     map[string]uint32 // 乐观锁
+	selectedDB   int               // 客户端当前选中的db
+	role         int32
 }
 
 func NewConnection(conn net.Conn) *RedisClientConnection {
@@ -51,7 +51,7 @@ func (c *RedisClientConnection) Write(bytes []byte) error {
 	if len(bytes) == 0 {
 		return nil
 	}
-	// TODO 写锁 保证命令写回客户端的完整？
+	// 这里加锁似乎没有必要 这里没有并发安全问题
 	c.mu.Lock()
 	// 超时等待 这里的目的是为了在关闭redis服务器的时候，能够先保证处理完向客户端发送的数据 再关闭连接
 	// 因为只要这里的waitingReply里Add和Done不配对，c.waitingReply.Wait()就会阻塞住， 直到对应次数的Done()被调用

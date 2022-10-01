@@ -7,7 +7,7 @@ import (
 )
 
 var (
-	nullBulkReplyBytes = []byte("$-1") // 空字符串 如get的key不存在时的响应
+	nullBulkReplyBytes = []byte("$-1\r\n") // 空字符串 如get的key不存在时的响应
 	CRLF               = "\r\n"
 )
 

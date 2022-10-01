@@ -2,8 +2,8 @@ package tcp
 
 import (
 	"context"
+	"go.uber.org/zap"
 	"gokv/interface/tcp"
-	"log"
 	"net"
 	"os"
 	"os/signal"
@@ -38,10 +38,10 @@ func ListenAndServe(cfg *Config, handler tcp.Handler) error {
 	// tcp服务器端口监听
 	listener, err := net.Listen("tcp", cfg.Address)
 	if err != nil {
-		log.Fatalf("listen err: %v", err)
+		zap.L().Fatal("listen err: %v", zap.Error(err))
 		return err
 	}
-	log.Printf("bind port%s, start listening...", cfg.Address)
+	zap.L().Info("bind address " + cfg.Address + " start listening...")
 	listenAndServeInternal(listener, handler, closeChan)
 	return nil
 }
@@ -51,7 +51,7 @@ func listenAndServeInternal(listener net.Listener, handler tcp.Handler, closeCha
 	// 等待close信号 一旦接收到信号 则开始优雅退出
 	go func() {
 		<-closeChan
-		log.Printf("shutting down....")
+		zap.L().Info("shutting down....")
 		// 停止监听客户端的连接请求 但是已经建立的连接不会被关闭
 		_ = listener.Close()
 		// redis服务器关闭
@@ -74,7 +74,7 @@ func listenAndServeInternal(listener net.Listener, handler tcp.Handler, closeCha
 		if err != nil {
 			break
 		}
-		log.Printf("accpet connection")
+		zap.L().Info("accept connection: " + conn.RemoteAddr().String())
 		// 与wg.Done()对应 即必须等到所有的连接都处理完才会执行wg.Done() 外面
 		wg.Add(1)
 		go func() {

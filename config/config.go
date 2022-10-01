@@ -2,8 +2,8 @@ package config
 
 import (
 	"fmt"
-
 	"github.com/fsnotify/fsnotify"
+
 	"github.com/spf13/viper"
 	_ "github.com/spf13/viper"
 )
@@ -45,11 +45,6 @@ type LogConfig struct {
 
 func Init() error {
 	viper.SetConfigFile("config.yaml")
-	viper.WatchConfig()
-	viper.OnConfigChange(func(in fsnotify.Event) {
-		_ = viper.Unmarshal(Conf)
-	})
-
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(fmt.Errorf("ReadInConfig failed, err: %v", err))
@@ -57,5 +52,9 @@ func Init() error {
 	if err := viper.Unmarshal(Conf); err != nil {
 		panic(fmt.Errorf("unmarshal to Conf failed, err:%v", err))
 	}
+	viper.WatchConfig()
+	viper.OnConfigChange(func(in fsnotify.Event) {
+		_ = viper.Unmarshal(Conf)
+	})
 	return err
 }
