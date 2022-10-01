@@ -139,7 +139,14 @@ func parseInternal(reader io.Reader, ch chan<- *Payload) {
 				// 空数组 *0\r\n
 				if state.expectedArgsCount == 0 {
 					ch <- &Payload{
-						Data: &protocol.EmptyMultiBulkReply{},
+						Data: protocol.NewEmptyMultiBulkReply(),
+					}
+					state = readState{}
+					continue
+				}
+				if state.expectedArgsCount == -1 {
+					ch <- &Payload{
+						Data: protocol.NewNullMultiBulkReply(),
 					}
 					state = readState{}
 					continue
@@ -158,7 +165,7 @@ func parseInternal(reader io.Reader, ch chan<- *Payload) {
 				// nil字符串 $-1\r\n
 				if state.bulkLen == NullBulkHeader {
 					ch <- &Payload{
-						Data: &protocol.NullBulkReply{},
+						Data: protocol.NewNullBulkReply(),
 					}
 					state = readState{}
 					continue
@@ -247,10 +254,10 @@ func parseMultiBulkHeader(msg []byte, state *readState) (err error) {
 	if err != nil {
 		return NoProtocol
 	}
-	// expectedArgsCount >= 0
-	// *0\r\n 空数组
-	if expectedArgsCount == 0 {
-		state.expectedArgsCount = 0
+
+	// *0\r\n 空数组 null数组
+	if expectedArgsCount == 0 || expectedArgsCount == -1 {
+		state.expectedArgsCount = int64(expectedArgsCount)
 	} else if expectedArgsCount > 0 {
 		state.msgType = msg[0]
 		state.readingMultiLine = true

@@ -5,6 +5,7 @@ var (
 	okBytes             = []byte("+OK\r\n")
 	pongBytes           = []byte("+PONG\r\n")
 	nullBulkBytes       = []byte("$-1\r\n")
+	nullMultiBulkBytes  = []byte("*-1\r\n")
 	emptyMultiBulkBytes = []byte("*0\r\n")
 	queuedBytes         = []byte("+QUEUED\r\n")
 )
@@ -14,6 +15,7 @@ var (
 	theOkReply             = &OkReply{}
 	theNoReply             = &NoReply{}
 	theNullBulkReply       = &NullBulkReply{}
+	theNullMultiBulkReply  = &NullMultiBulkReply{}
 	theEmptyMultiBulkReply = &EmptyMultiBulkReply{}
 	theQueuedReply         = &QueuedReply{}
 )
@@ -54,6 +56,19 @@ func (r *NullBulkReply) ToBytes() []byte {
 // NewNullBulkReply 创建一个NullBulkReply实例 并返回其指针
 func NewNullBulkReply() *NullBulkReply {
 	return theNullBulkReply
+}
+
+// NullBulkReply 空的二进制安全字符串
+type NullMultiBulkReply struct{}
+
+// ToBytes 序列化
+func (r *NullMultiBulkReply) ToBytes() []byte {
+	return nullMultiBulkBytes
+}
+
+// NewNullMultiBulkReply 创建一个空NullMultiBulkReply实例 并返回其指针
+func NewNullMultiBulkReply() *NullMultiBulkReply {
+	return theNullMultiBulkReply
 }
 
 // EmptyMultiBulkReply 空list
