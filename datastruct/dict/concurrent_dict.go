@@ -1,6 +1,7 @@
 package dict
 
 import (
+	"go.uber.org/zap"
 	"gokv/interface/datastruct"
 	"gokv/lib/hash"
 	"math"
@@ -14,14 +15,14 @@ const (
 )
 
 type ConcurrentHashDict struct {
-	table      []*shard
-	count      int32
-	shardCount int32
+	table      []*shard // 分段
+	count      int32    // key总数
+	shardCount int32    // 分段数量 相当于并发度 一个分段会有一把锁
 }
 
 type shard struct {
-	m     map[string]any
-	mutex sync.RWMutex
+	m     map[string]any // golang内置的map
+	mutex sync.RWMutex   // 读写锁
 }
 
 func computeCapacity(size int32) int32 {
@@ -57,14 +58,14 @@ func NewConcurrentHashDict(shardCount int32) *ConcurrentHashDict {
 // spread 根据hashCode返回map中table的索引
 func (m *ConcurrentHashDict) spread(hashCode int32) int32 {
 	if m == nil {
-		panic("ConcurrentHashDict is nil")
+		zap.L().Panic("ConcurrentHashDict is nil")
 	}
 	return (m.shardCount - 1) & hashCode
 }
 
 func (m *ConcurrentHashDict) getShard(hashCode int32) *shard {
 	if m == nil {
-		panic("ConcurrentHashDict is nil")
+		zap.L().Panic("ConcurrentHashDict is nil")
 	}
 	index := m.spread(hashCode)
 	return m.table[index]
@@ -81,7 +82,7 @@ func (m *ConcurrentHashDict) Get(key string) (val any, exists bool) {
 
 func (m *ConcurrentHashDict) Len() int32 {
 	if m == nil {
-		panic("ConcurrentHashDict is nil")
+		zap.L().Panic("ConcurrentHashDict is nil")
 	}
 	return atomic.LoadInt32(&m.count)
 }
@@ -139,16 +140,22 @@ func (m *ConcurrentHashDict) Remove(key string) (result int32) {
 }
 
 func (m *ConcurrentHashDict) addCount() int32 {
+	if m == nil {
+		zap.L().Panic("ConcurrentHashDict is nil")
+	}
 	return atomic.AddInt32(&m.count, 1)
 }
 
 func (m *ConcurrentHashDict) decreaseCount() int32 {
+	if m == nil {
+		zap.L().Panic("ConcurrentHashDict is nil")
+	}
 	return atomic.AddInt32(&m.count, -1)
 }
 
 func (m *ConcurrentHashDict) ForEach(consumer datastruct.Consumer) {
 	if m == nil {
-		panic("ConcurrentHashDict is nil")
+		zap.L().Panic("ConcurrentHashDict is nil")
 	}
 	for _, s := range m.table {
 		s.mutex.RLock()
@@ -180,7 +187,7 @@ func (m *ConcurrentHashDict) Keys() []string {
 
 func (m *ConcurrentHashDict) RandomKeys(limit int32) []string {
 	if m == nil {
-		panic("ConcurrentHashDict is nil")
+		zap.L().Panic("ConcurrentHashDict is nil")
 	}
 	keys := make([]string, limit)
 	for i := int32(0); i < limit; {
@@ -229,7 +236,7 @@ func (m *ConcurrentHashDict) Clear() {
 
 func (s *shard) randomKey() string {
 	if s == nil {
-		panic("shard is nil")
+		zap.L().Panic("shard is nil")
 	}
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()

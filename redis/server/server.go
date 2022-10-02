@@ -63,7 +63,7 @@ func (h *Handler) Handle(ctx context.Context, conn net.Conn) {
 	ch := parser.ParseStream(conn)
 	for payload := range ch {
 		if err := payload.Err; err != nil {
-			// 客户端关闭连接 服务器也要关闭连接
+			// 客户端关闭连接 服务器也要关闭连接 否则被动关闭方会卡在close wait状态
 			if err == io.EOF ||
 				err == io.ErrUnexpectedEOF ||
 				strings.Contains(err.Error(), "use of closed network connection") {
@@ -90,7 +90,7 @@ func (h *Handler) Handle(ctx context.Context, conn net.Conn) {
 		// 所有的客户端命令都是Bulk String数组 所以必须是MultiBulkReply类型 Reply在序列化(ToBytes())的时候会转换成RESP格式的字符串
 		r, ok := payload.Data.(*protocol.MultiBulkReply)
 		if !ok {
-			zap.L().Error("require multi bulk reply")
+			zap.L().Warn("require multi bulk reply")
 			continue
 		}
 		// 调用数据库引擎执行 Args 是具体的参数 result是服务器执行后的相应 用于发送给客户端
@@ -108,7 +108,7 @@ func (h *Handler) Close() error {
 	zap.L().Info("handler shutting down...")
 	// 设置正在关闭标志位 标志位为true则后续Handler不会与新的请求建立连接
 	h.closing.Set(true)
-	// 关闭所有客户端连接 但是会等服务端向客户端数据发送完毕才关闭
+	// 关闭所有客户端连接 但是会等服务端向客户端数据发送完毕才关闭或者达到了超时时间
 	h.activeConn.Range(func(key, value any) bool {
 		clientConn, ok := key.(*client.RedisClientConnection)
 		if ok {
