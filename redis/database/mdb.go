@@ -73,7 +73,11 @@ func NewStandaloneServer() *MultiDB {
 		}
 		mdb.aofHandler = aofHandler
 		for _, holder := range mdb.dbSet {
-			sdb := holder.Load().(*SingleDB)
+			sdb, ok := holder.Load().(*SingleDB)
+			if !ok {
+				zap.L().Error("holder must be SingleDB")
+				continue
+			}
 			// SDB的AddAof函数的目的就是调用mdb里持有的aofHandler 目的其实就是向aof协程发送一条持久化命令
 			sdb.addAof = func(cmdLine CmdLine) {
 				mdb.aofHandler.AddAof(sdb.index, cmdLine)

@@ -246,11 +246,11 @@ func readLine(reader *bufio.Reader, state *readState) (msg []byte, ioError bool,
 // parseMultiBulkHeader 解析 Bulk String 数组的第一行 主要是读取参数个数 并根据该数据初始化readingState
 // 这个函数不会修改bulkLen
 func parseMultiBulkHeader(msg []byte, state *readState) (err error) {
-	var expectedArgsCount uint64
+	var expectedArgsCount int64
 	// 读取数组有多少元素
 	// 形如*3\r\n格式
 	// 如果是 *-3 则此处err != nil
-	expectedArgsCount, err = strconv.ParseUint(string(msg[1:len(msg)-len(CRLF)]), 10, 64)
+	expectedArgsCount, err = strconv.ParseInt(string(msg[1:len(msg)-len(CRLF)]), 10, 64)
 	if err != nil {
 		return NoProtocol
 	}

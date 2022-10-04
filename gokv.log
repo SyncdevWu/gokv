@@ -211,3 +211,10 @@
 {"level":"INFO","time":"2022-10-01T16:31:34.111+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
 {"level":"INFO","time":"2022-10-01T16:31:34.111+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
 {"level":"INFO","time":"2022-10-01T16:31:37.812+0800","caller":"tcp/server.go:44","msg":"bind address 0.0.0.0:6399 start listening..."}
+{"level":"INFO","time":"2022-10-05T00:32:57.717+0800","caller":"tcp/server.go:54","msg":"shutting down...."}
+{"level":"INFO","time":"2022-10-05T00:32:57.719+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-10-05T00:32:57.719+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-10-05T00:33:28.310+0800","caller":"tcp/server.go:44","msg":"bind address 0.0.0.0:6399 start listening..."}
+{"level":"INFO","time":"2022-10-05T00:33:31.351+0800","caller":"tcp/server.go:54","msg":"shutting down...."}
+{"level":"INFO","time":"2022-10-05T00:33:31.352+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-10-05T00:33:31.352+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
