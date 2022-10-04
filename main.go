@@ -2,12 +2,11 @@ package main
 
 import (
 	"fmt"
+	"go.uber.org/zap"
 	"gokv/config"
 	"gokv/logger"
 	"gokv/redis/server"
 	"gokv/tcp"
-
-	"go.uber.org/zap"
 )
 
 const banner = `

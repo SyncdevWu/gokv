@@ -1,6 +1,7 @@
 package lock
 
 import (
+	"go.uber.org/zap"
 	"gokv/lib/hash"
 	"math"
 	"sort"
@@ -40,7 +41,7 @@ func computeCapacity(param int32) (size int32) {
 
 func (l *Locks) spread(hashCode int32) int32 {
 	if l == nil {
-		panic("Locks is nil")
+		zap.L().Panic("Locks is nil")
 	}
 	return int32(len(l.table)-1) & hashCode
 }

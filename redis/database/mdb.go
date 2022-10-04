@@ -65,7 +65,7 @@ func NewStandaloneServer() *MultiDB {
 	if config.Conf.AppendOnly {
 		aofHandler, err := aof.NewAofHandler(mdb, func() redis.EmbedDB {
 			// 没有一次性加多个锁(Locks)的MDB 也没有aof等功能
-			// 这个mdb的主要作用就是aof重写的时候充当fork的作用 会根据copy出来的aof文件给该数据库回复 然后再根据改数据库内存中的key val进行重写
+			// 这个mdb的主要作用就是aof重写的时候充当fork的作用 会根据copy出来的aof文件给该数据库恢复 然后再根据改数据库内存中的key val进行重写
 			return NewBasicMultiDB()
 		})
 		if err != nil {

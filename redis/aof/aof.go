@@ -45,16 +45,21 @@ type Handler struct {
 
 func NewAofHandler(db redis.EmbedDB, tmpDBMaker func() redis.EmbedDB) (*Handler, error) {
 	aofFileName := config.Conf.AppendFilename
+	if aofFileName == "" {
+		zap.L().Fatal("aof file path must not null")
+	}
 	// 这里不能先打开文件 因为后面需要进行数据恢复
-	handler := &Handler{}
-	handler.aofFileName = aofFileName
-	handler.db = db
-	// aof重写用
-	handler.tmpDBMaker = tmpDBMaker
+	handler := &Handler{
+		db:          db,
+		aofFileName: aofFileName,
+		tmpDBMaker:  tmpDBMaker,
+	}
+	// 0表示全部读取 启动redis时恢复aof持久化保存的数据
 	handler.LoadAof(0)
 	// 无文件时创建新文件 有文件时追加内容
 	aofFile, err := os.OpenFile(aofFileName, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0600)
 	if err != nil {
+		zap.L().Error("aof file path must not null")
 		return nil, err
 	}
 	handler.aofFile = aofFile
@@ -89,10 +94,13 @@ func (handler *Handler) LoadAof(maxBytes int) {
 	// 第一次启动服务器应该是没有aof文件的
 	// NewAofHandler的LoadAof后才创建了aof文件
 	if err != nil {
+		// 不存在aof文件
 		if _, ok := err.(*os.PathError); ok {
 			return
 		}
+		// 其他错误
 		zap.L().Error("Aof Handler LoadAof() ", zap.Error(err))
+		return
 	}
 	defer file.Close()
 
@@ -172,10 +180,6 @@ func (handler *Handler) handlerAof() {
 				zap.L().Warn("Aof Handler handlerAof ", zap.Error(err))
 				continue
 			}
-			// 每指令落盘
-			if aofSyncAlways == handler.aofSyncMode {
-				_ = handler.aofFile.Sync()
-			}
 			handler.currentDBIndex = p.dbIndex
 		}
 		// 具体的命令
@@ -185,7 +189,11 @@ func (handler *Handler) handlerAof() {
 			zap.L().Warn("Aof Handler handlerAof ", zap.Error(err))
 			continue
 		}
-		handler.pausingAof.RLock()
+		// 每指令落盘
+		if aofSyncAlways == handler.aofSyncMode {
+			_ = handler.aofFile.Sync()
+		}
+		handler.pausingAof.RUnlock()
 	}
 	// 通知主协程已经完成aof
 	handler.aofFinishedChan <- struct{}{}
