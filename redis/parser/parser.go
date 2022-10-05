@@ -257,11 +257,11 @@ func parseMultiBulkHeader(msg []byte, state *readState) (err error) {
 
 	// *0\r\n 空数组 null数组
 	if expectedArgsCount == 0 || expectedArgsCount == -1 {
-		state.expectedArgsCount = int64(expectedArgsCount)
+		state.expectedArgsCount = expectedArgsCount
 	} else if expectedArgsCount > 0 {
 		state.msgType = msg[0]
 		state.readingMultiLine = true
-		state.expectedArgsCount = int64(expectedArgsCount)
+		state.expectedArgsCount = expectedArgsCount
 		state.args = make([][]byte, 0, expectedArgsCount)
 	} else {
 		return NoProtocol

@@ -7,6 +7,8 @@ import (
 	"gokv/interface/redis"
 	"gokv/lib/timewheel"
 	"gokv/redis/protocol"
+	"gokv/utils"
+	"strconv"
 
 	"gokv/config"
 	"strings"
@@ -95,12 +97,22 @@ func (sdb *SingleDB) execNormalCommand(cmdLine [][]byte) redis.Reply {
 	if !validateArity(cmd.Arity, cmdLine) {
 		return protocol.NewArgNumErrReply(cmdName)
 	}
+	// 预处理函数 主要用于分析读写的key
 	prepare := cmd.Prepare
+	if prepare == nil {
+		zap.L().Error("SingleDB.execNormalCommand prepare function must not null")
+		return protocol.NewUnknownErrReply()
+	}
 	writeKeys, readKeys := prepare(cmdLine[1:])
+	// 版本号
 	sdb.AddVersion(writeKeys...)
 	sdb.RWLocks(writeKeys, readKeys)
 	defer sdb.RWUnlocks(writeKeys, readKeys)
 	executor := cmd.Executor
+	if executor == nil {
+		zap.L().Error("SingleDB.execNormalCommand executor function must not null")
+		return protocol.NewUnknownErrReply()
+	}
 	return executor(sdb, cmdLine[1:])
 }
 
@@ -358,4 +370,15 @@ func (sdb *SingleDB) EnqueueCmd(conn redis.Connection, cmdLine [][]byte) redis.R
 	}
 	conn.EnqueueCmd(cmdLine)
 	return protocol.NewQueuedReply()
+}
+
+func (sdb *SingleDB) ToTTLCmd(key string) redis.Reply {
+	raw, exists := sdb.ttl.Get(key)
+	if !exists {
+		// has no TTL
+		return protocol.NewMultiBulkReply(utils.ToCmdLine("PERSIST", key))
+	}
+	expireTime, _ := raw.(time.Time)
+	timestamp := strconv.FormatInt(expireTime.UnixNano()/1000/1000, 10)
+	return protocol.NewMultiBulkReply(utils.ToCmdLine("PEXPIREAT", key, timestamp))
 }

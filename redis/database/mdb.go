@@ -111,7 +111,7 @@ func NewBasicMultiDB() *MultiDB {
 func (mdb *MultiDB) Exec(conn redis.Connection, cmdLine [][]byte) (result redis.Reply) {
 	defer func() {
 		if err := recover(); err != nil {
-			zap.L().Error("MultiDB.Exec() failed. ", zap.Error(err.(error)))
+			zap.L().Error("MultiDB.Exec() panic. ", zap.Error(err.(error)))
 			result = protocol.NewUnknownErrReply()
 		}
 	}()
@@ -121,6 +121,7 @@ func (mdb *MultiDB) Exec(conn redis.Connection, cmdLine [][]byte) (result redis.
 	// select命令
 	if cmdName == "select" {
 		// 目前不支持在开启事务的时候切换数据库 但是redis原生应该是支持的
+		// 目前的事务实现是基于单数据库执行与回滚的，是SingleDB的方法
 		if conn != nil && conn.InMultiState() {
 			return protocol.NewErrReply("cannot select database within multi")
 		}
@@ -151,7 +152,7 @@ func execSelect(conn redis.Connection, mdb *MultiDB, args [][]byte) redis.Reply 
 	if dbIndex >= len(mdb.dbSet) || dbIndex < 0 {
 		return protocol.NewErrReply("ERR DB index is out of range")
 	}
-	// 只是讲切换后的数据库保存到conn里
+	// 只是将切换后的数据库保存到conn里
 	conn.SelectDB(dbIndex)
 	return protocol.NewOkReply()
 }

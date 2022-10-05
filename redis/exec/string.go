@@ -207,7 +207,7 @@ func execSet(sdb *database.SingleDB, args [][]byte) redis.Reply {
 }
 
 func init() {
-	router.RegisterCommand("Set", execSet, transaction.WriteFirstKey, nil, -3, router.FlagWrite)
+	router.RegisterCommand("Set", execSet, transaction.WriteFirstKey, transaction.RollbackFirstKey, -3, router.FlagWrite)
 	router.RegisterCommand("Get", execGet, transaction.ReadFirstKey, nil, 2, router.FlagReadOnly)
-	router.RegisterCommand("GetEX", execGetEX, transaction.WriteFirstKey, nil, -2, router.FlagWrite)
+	router.RegisterCommand("GetEX", execGetEX, transaction.WriteFirstKey, transaction.RollbackFirstKey, -2, router.FlagWrite)
 }

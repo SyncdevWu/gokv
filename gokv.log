@@ -218,3 +218,4 @@
 {"level":"INFO","time":"2022-10-05T00:33:31.351+0800","caller":"tcp/server.go:54","msg":"shutting down...."}
 {"level":"INFO","time":"2022-10-05T00:33:31.352+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
 {"level":"INFO","time":"2022-10-05T00:33:31.352+0800","caller":"server/server.go:108","msg":"handler shutting down..."}
+{"level":"INFO","time":"2022-10-05T14:59:51.830+0800","caller":"tcp/server.go:44","msg":"bind address 0.0.0.0:6399 start listening..."}
