@@ -279,7 +279,7 @@ func (sdb *SingleDB) Expire(key string, expireTime time.Time) {
 	})
 }
 
-// ForEach 遍历 consumer参数是可以在遍历中座的事 如果consumer函数返回了false则会提前终止遍历
+// ForEach 遍历 consumer参数是可以在遍历中做的事 如果consumer函数返回了false则会提前终止遍历
 func (sdb *SingleDB) ForEach(consumer func(key string, data *redis.DataEntity, expiration *time.Time) bool) {
 	sdb.data.ForEach(func(key string, val any) bool {
 		entity, ok := val.(*redis.DataEntity)
