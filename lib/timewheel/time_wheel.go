@@ -8,10 +8,10 @@ import (
 )
 
 type TimeWheel struct {
-	interval       time.Duration
-	ticker         *time.Ticker
-	slots          []*list.List
-	timer          map[string]*location
+	interval       time.Duration        // 每个时间片间隔时间
+	ticker         *time.Ticker         // 定时器
+	slots          []*list.List         // 循环数组 每个数组元素是一个链表
+	timer          map[string]*location // 保存每个task的位置和封装后的list elem
 	currentPos     int
 	slotNum        int
 	addTaskChan    chan task
@@ -85,7 +85,7 @@ func (tw *TimeWheel) AddJob(delay time.Duration, key string, job func()) {
 }
 
 func (tw *TimeWheel) RemoveJob(key string) {
-	if tw == nil || key == "" {
+	if tw == nil {
 		return
 	}
 	tw.removeTaskChan <- key
@@ -114,12 +114,15 @@ func (tw *TimeWheel) tickHandler() {
 	if tw == nil {
 		return
 	}
+	// 当前槽位
 	l := tw.slots[tw.currentPos]
+	// 下次定时器到来时的位置
 	if tw.currentPos == tw.slotNum-1 {
 		tw.currentPos = 0
 	} else {
 		tw.currentPos++
 	}
+	// 开启协程扫描到期的key
 	go tw.scanAndDoTask(l)
 }
 
@@ -144,9 +147,7 @@ func (tw *TimeWheel) scanAndDoTask(l *list.List) {
 		}()
 		next := e.Next()
 		l.Remove(e)
-		if t.key != "" {
-			delete(tw.timer, t.key)
-		}
+		delete(tw.timer, t.key)
 		e = next
 	}
 }
@@ -159,12 +160,10 @@ func (tw *TimeWheel) addTask(t *task) {
 		slot:  pos,
 		etask: e,
 	}
-	if t.key != "" {
-		// 如果已经存在此key 则需要先删除
-		_, ok := tw.timer[t.key]
-		if ok {
-			tw.removeTask(t.key)
-		}
+	// 如果已经存在此key 则需要先删除
+	_, ok := tw.timer[t.key]
+	if ok {
+		tw.removeTask(t.key)
 	}
 	tw.timer[t.key] = loc
 }
