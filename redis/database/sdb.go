@@ -248,7 +248,7 @@ func (sdb *SingleDB) IsExpired(key string) bool {
 	expireTime, _ := rawExpireTime.(time.Time)
 	expired := time.Now().After(expireTime)
 	if expired {
-		sdb.ttl.Remove(key)
+		sdb.Remove(key)
 	}
 	return expired
 }
