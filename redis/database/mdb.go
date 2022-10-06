@@ -109,6 +109,9 @@ func NewBasicMultiDB() *MultiDB {
 
 // Exec redis数据库的核心处理流程 conn是封装过的net.Conn并保存了事务状态 事务开启时队列保存的命令 选中的当前数据库等 cmdLine是客户端发送过来的命令
 func (mdb *MultiDB) Exec(conn redis.Connection, cmdLine [][]byte) (result redis.Reply) {
+	if mdb == nil {
+		return protocol.NewUnknownErrReply()
+	}
 	defer func() {
 		if err := recover(); err != nil {
 			zap.L().Error("MultiDB.Exec() panic. ", zap.Error(err.(error)))
@@ -130,6 +133,8 @@ func (mdb *MultiDB) Exec(conn redis.Connection, cmdLine [][]byte) (result redis.
 			return protocol.NewArgNumErrReply("select")
 		}
 		return execSelect(conn, mdb, cmdLine[1:])
+	} else if cmdName == "bgrewriteaof" {
+		return mdb.BGRewriteAOF()
 	}
 
 	// 执行普通的命令
@@ -247,4 +252,9 @@ func (mdb *MultiDB) RWLocks(dbIndex int, writeKeys, readKeys []string) {
 // RWUnlocks TODO 貌似是给集群版使用的?
 func (mdb *MultiDB) RWUnlocks(dbIndex int, writeKeys, readKeys []string) {
 	mdb.mustSelectDB(dbIndex).RWUnlocks(writeKeys, readKeys)
+}
+
+func (mdb *MultiDB) BGRewriteAOF() redis.Reply {
+	go mdb.aofHandler.Rewrite()
+	return protocol.NewStatusReply("Background append only file rewriting started")
 }

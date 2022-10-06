@@ -54,7 +54,7 @@ func (handler *Handler) StartRewrite() (*Context, error) {
 	// 落盘操作
 	err := handler.aofFile.Sync()
 	if err != nil {
-		zap.L().Warn("Rewrite StartRewrite() aof file sync failed", zap.Error(err))
+		zap.L().Error("Rewrite StartRewrite() aof file sync failed", zap.Error(err))
 		return nil, err
 	}
 	// 读取下当前aof文件大小 即可以读取到到aof重写开始前的所有数据
@@ -144,7 +144,7 @@ func (handler *Handler) FinishRewrite(context *Context) error {
 	// 打开新的aof文件 并让handler持有
 	aofFile, err := os.OpenFile(handler.aofFileName, os.O_APPEND|os.O_RDWR|os.O_CREATE, 0600)
 	if err != nil {
-		zap.L().Panic("Handler FinishRewrite() open new aof file failed ", zap.Error(err))
+		zap.L().Error("Handler FinishRewrite() open new aof file failed ", zap.Error(err))
 		return err
 	}
 	handler.aofFile = aofFile
@@ -154,7 +154,7 @@ func (handler *Handler) FinishRewrite(context *Context) error {
 	data = protocol.NewMultiBulkReply(utils.ToCmdLine("SELECT", strconv.Itoa(handler.currentDBIndex))).ToBytes()
 	_, err = handler.aofFile.Write(data)
 	if err != nil {
-		zap.L().Panic("Handler FinishRewrite() change db failed ", zap.Error(err))
+		zap.L().Error("Handler FinishRewrite() change db failed ", zap.Error(err))
 		return err
 	}
 	return nil

@@ -20,6 +20,9 @@ func (sdb *SingleDB) ExecMulti(conn redis.Connection, watching map[string]uint32
 		}
 		// 事务执行前分析需要加锁的key 并对他们分别加读锁或写锁 而且是必须一次性加上
 		prepare := cmd.Prepare
+		if prepare == nil {
+			return protocol.NewUnknownErrReply()
+		}
 		write, read := prepare(cmdLine[1:])
 		writeKeys = append(writeKeys, write...)
 		readKeys = append(readKeys, read...)
@@ -35,7 +38,7 @@ func (sdb *SingleDB) ExecMulti(conn redis.Connection, watching map[string]uint32
 	readKeys = append(readKeys, watchingKeys...)
 	sdb.RWLocks(writeKeys, readKeys)
 	defer sdb.RWUnlocks(writeKeys, readKeys)
-	//  watch的值被改变 主要是比较版本号
+	//  watch的值被改变 主要是比较版本号 版本号改变了就不执行事务了
 	if isWatchingChanged(sdb, watching) {
 		return protocol.NewEmptyMultiBulkReply()
 	}
@@ -79,7 +82,7 @@ func (sdb *SingleDB) ExecMulti(conn redis.Connection, watching map[string]uint32
 			sdb.execWithLock(curCmdLines[j])
 		}
 	}
-	return protocol.NewErrReply("EXECABORT Transaction discarded because of previous errors.")
+	return protocol.NewErrReply("EXEC ABORT Transaction discarded because of previous errors.")
 }
 
 func (sdb *SingleDB) GetUndoLogs(cmdLine CmdLine) []CmdLine {

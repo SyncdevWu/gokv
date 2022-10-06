@@ -334,7 +334,7 @@ func (sdb *SingleDB) DoMulti(conn redis.Connection) redis.Reply {
 		conn.ClearQueuedCmds()
 		conn.SetAbort(false)
 		conn.SetMultiState(false)
-		return protocol.NewErrReply("EXECABORT Transaction discarded because of previous errors.")
+		return protocol.NewErrReply("EXEC ABORT Transaction discarded because of previous errors.")
 	}
 	defer conn.SetMultiState(false)
 	// 执行事务的核心逻辑
